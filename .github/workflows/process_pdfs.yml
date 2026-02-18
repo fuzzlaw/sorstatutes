@@ -1,1 +1,37 @@
+name: Process PDFs
 
+on:
+  push:
+    paths:
+      - '**.pdf'
+  workflow_dispatch:
+
+jobs:
+  process:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: pip install pymupdf
+
+      - name: Create output directory
+        run: mkdir -p output
+
+      - name: Run PDF processing script
+        run: python process_pdfs.py
+
+      - name: Commit and push index
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git add output/index.json output/errors.txt
+          git diff --cached --quiet || git commit -m "Update search index"
+          git push
