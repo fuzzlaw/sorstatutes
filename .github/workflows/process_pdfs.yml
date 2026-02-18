@@ -1,4 +1,4 @@
-name: Process PDFs
+name: Process PDFs and Build Database
 
 on:
   push:
@@ -20,7 +20,7 @@ jobs:
           python-version: '3.12'
 
       - name: Install dependencies
-        run: pip install pymupdf
+        run: pip install pymupdf sqlite-utils
 
       - name: Create output directory
         run: mkdir -p output
@@ -28,11 +28,33 @@ jobs:
       - name: Run PDF processing script
         run: python process_pdfs.py
 
-      - name: Commit and push index
+      - name: Build SQLite database
+        run: python build_db.py
+
+      - name: Commit and push output
         run: |
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
           git add output/index.json
+          git add output/statutes.db
           git add output/errors.txt 2>/dev/null || true
-          git diff --cached --quiet || git commit -m "Update search index"
+          git diff --cached --quiet || git commit -m "Update search index and database"
           git push
+```
+
+---
+
+**Step 6: Deploy to Render**
+
+Once all the above files are committed to your repository, you'll set up Render to host the site.
+
+Go to **render.com** and create a free account. Click **New** and select **Web Service**. Connect your GitHub account when prompted and select your repository. Fill in the settings as follows:
+
+For **Name**, type anything you like, such as `statutes-search`. For **Environment**, select **Python**. For **Build Command**, type:
+```
+pip install -r requirements.txt
+```
+
+For **Start Command**, type:
+```
+datasette serve output/statutes.db --metadata metadata.json --host 0.0.0.0 --port $PORT
