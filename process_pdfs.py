@@ -86,7 +86,7 @@ def process_pdfs(pdf_dir, output_path, error_path):
 
 if __name__ == '__main__':
     process_pdfs(
-        pdf_dir='pdfs',
+        pdf_dir='.',
         output_path='output/index.json',
         error_path='output/errors.txt'
     )
