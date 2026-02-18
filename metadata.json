@@ -6,7 +6,23 @@
             "tables": {
                 "documents": {
                     "fts_table": "documents_fts",
-                    "searchmode": "raw"
+                    "searchmode": "raw",
+                    "hidden_columns": ["full_text", "text_by_page"],
+                    "label_column": "filename",
+                    "columns": {
+                        "id": "ID",
+                        "filename": "Document",
+                        "state": "State",
+                        "year": "Year",
+                        "page_count": "Pages"
+                    }
+                }
+            },
+            "queries": {
+                "search": {
+                    "sql": "SELECT documents.filename, documents.state, documents.year, documents.page_count, snippet(documents_fts, 3, '[', ']', '...', 25) as context FROM documents JOIN documents_fts ON documents.rowid = documents_fts.rowid WHERE documents_fts MATCH :query ORDER BY rank",
+                    "title": "Search Statutes",
+                    "description": "Enter a search term. Use * for wildcard (legislat*), NEAR(word1 word2, 10) for proximity search."
                 }
             }
         }
