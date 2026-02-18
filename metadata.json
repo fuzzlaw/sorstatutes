@@ -1,0 +1,27 @@
+{
+    "title": "State Statutes Search",
+    "description": "Search state statutes by keyword, proximity, and wildcard",
+    "auth": {
+        "plugins": {
+            "datasette-auth-passwords": {
+                "htpasswd_filename": "htpasswd"
+            }
+        }
+    },
+    "plugins": {
+        "datasette-auth-passwords": {
+            "htpasswd_filename": "htpasswd"
+        }
+    },
+    "databases": {
+        "statutes": {
+            "tables": {
+                "documents": {
+                    "searchmode": "raw",
+                    "fts_table": "documents_fts",
+                    "label_column": "filename"
+                }
+            }
+        }
+    }
+}
