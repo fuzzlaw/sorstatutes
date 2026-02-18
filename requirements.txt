@@ -1,0 +1,3 @@
+datasette
+datasette-auth-passwords
+sqlite-utils
