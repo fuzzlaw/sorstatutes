@@ -40,21 +40,3 @@ jobs:
           git add output/errors.txt 2>/dev/null || true
           git diff --cached --quiet || git commit -m "Update search index and database"
           git push
-```
-
----
-
-**Step 6: Deploy to Render**
-
-Once all the above files are committed to your repository, you'll set up Render to host the site.
-
-Go to **render.com** and create a free account. Click **New** and select **Web Service**. Connect your GitHub account when prompted and select your repository. Fill in the settings as follows:
-
-For **Name**, type anything you like, such as `statutes-search`. For **Environment**, select **Python**. For **Build Command**, type:
-```
-pip install -r requirements.txt
-```
-
-For **Start Command**, type:
-```
-datasette serve output/statutes.db --metadata metadata.json --host 0.0.0.0 --port $PORT
